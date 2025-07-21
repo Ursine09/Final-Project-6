@@ -1,83 +1,63 @@
 package gameofWar;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-
-public class LabApp {
+public class App {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		System.out.println("\nQuestion 1 : Card Class");
-		Card tempCard = new Card("Two", "Hearts", 2);
-		tempCard.describe();
 
-		System.out.println("\nQuestion 2 : Deck Class");
-		Deck deck = new Deck();
-		System.out.println("Deck has been created!");
-		deck.describe();
-
-		System.out.println("\nQuestion 3: Deck shuffle() method");
-
-		deck.shuffle();
-		System.out.println("Shuffled Deck:");
-
-		deck.describe();
-
-		System.out.println("\nQuestion 4: Deck draw() method");
-
-		Card drawnCard = deck.draw();
-		drawnCard.describe();
-
-		System.out.println("\nQuestion 5: Create Game");
-
-		Map<String, List<Card>> gameBoard = new HashMap<>();
-		int numberOfPlayers = 2;
-		gameBoard = createGame(numberOfPlayers);
-
-		System.out.println("-------------------------------");
-		for (int i = 1; i <= numberOfPlayers; i++) {
-			String playerName = "Player" + i;
-			System.out.println(playerName + "\n-----------");
-			List<Card> playerList = gameBoard.get(playerName);
-			for (Card handCard : playerList) {
-				handCard.describe();
-			}
-			System.out.println("----------------------------------");
-		}
-	}
-
-	private static Map<String, List<Card>> createGame(int numOfPlayers) {
-		Map<String, List<Card>> finalGameBoard = new HashMap<>();
 		Deck deck = new Deck();
 		deck.shuffle();
-		System.out.println("Deck has" + deck.getCards().size() + " cards!");
 
-		for (int i = 1; i <= numOfPlayers; i++) {
-			List<Card> playerList = new ArrayList<>();
-			String playerName = "Player" + i;
-			finalGameBoard.put(playerName, playerList);
+		Player p1 = new Player();
+		Player p2 = new Player();
+
+		for (int i = 0; i < 26; i++) {
+			p1.draw(deck);
+			p2.draw(deck);
 		}
+		for (int i = 0; i < 26; i++) {
+			Card p1Card = p1.flip();
+			Card p2Card = p2.flip();
+			System.out.print("Player One has ");
+			p1Card.describe();
+			System.out.print("Player Two has ");
+			p2Card.describe();
+			if (p1Card.getValue() > p2Card.getValue()) {
+				p1.incrementScoreOne();
+				System.out.println("Player One wins this round!");
+				System.out.println(" ");
+				System.out.println(" ");
 
-		for (int i = 0; i < 52 / numOfPlayers; i++) {
-			for (int j = 1; j <= numOfPlayers; j++) {
-				String playerName = "Player" + j;
-				List<Card> playerList = finalGameBoard.get(playerName);
-				playerList.add(deck.draw());
-				finalGameBoard.replace(playerName, playerList);
+				p1.finaloneScore();
+				p2.finaltwoScore();
+
+			} else if (p1Card.getValue() < p2Card.getValue()) {
+				p2.incrementScoreTwo();
+				System.out.println("Player Two wins this round!");
+				System.out.println(" ");
+				System.out.println(" ");
+
+				p2.finaltwoScore();
+				p1.finaloneScore();
+
+			} else {
+				System.out.println("Draw!");
+
+				System.out.println("");
+				System.out.println("");
 			}
+
 		}
 
-		if (52 % numOfPlayers != 0) {
-			System.out.print("With " + numOfPlayers + "players -- ");
-			System.out.println("Cards left in deck: " + 52 % numOfPlayers);
+		// end of round play
 
+		if (p1.score1 > p2.score2) {
+			System.out.println("Player One wins!");
+		
+		} else if (p2.score2 > p1.score1) {
+			System.out.println("Player Two wins!");
+		
 		} else {
-			System.out.println("All cards have been dealt");
-
+			System.out.println("It's a draw!");
 		}
-
-		return finalGameBoard;
 	}
 }
